@@ -6,7 +6,6 @@ import tiktoken
 import os
 from openai.embeddings_utils import get_embedding
 from dotenv import load_dotenv
-from google import auth
 from youtube_transcript_api import YouTubeTranscriptApi
 import googleapiclient.discovery
 import json
