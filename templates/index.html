@@ -3,14 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Education Search</title>
+    <title>Transcript Search</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>Welcome to the Education Search!</h1>
+    <h1>Welcome to the Transcript Search!</h1>
     <form action="/search" method="get">
         <label for="query">Search:</label>
         <input type="text" id="query" name="query" placeholder="Enter search term...">
         <button type="submit">Search</button>
     </form>
+
+    {% if results %}
+    <div class="results">
+        {% for result in results %}
+            <div class="result">
+                <h3>{{ result[3] }} - {{ result[4] }}</h3>
+                <p><a href="{{ result[5] }}" target="_blank"><img src="{{ result[6] }}" alt="Thumbnail"></a></p>
+                <p>Similarity Score: {{ result[0] }}</p>
+                <p>Text: {{ result[1] }}</p>
+                <p>Start time: {{ result[2] }}</p>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- <div class="results">
+        <div class="result">
+            <h3>Ilya Sutskever: Deep Learning | Lex Fridman Podcast #94 - Lex Fridman</h3>
+            <p>Similarity Score: 0.8521511799860746</p>
+            <p>Text: fundamental problem which is finding a neural circuit subject to some constraints and i don't see that problem going away so that's why i i really i think it's pretty unlikely that we'll have anything which is going to be dramatically different it could happen but i wouldn't bet on it right now so let me ask a sort of big picture question do you think can do you think neural networks can be made to reason why not well if you look for example at alphago or alpha zero the neural network of alpha zero plays go which which we all agree is a game that requires reasoning better than 99.9 of all humans just the neural network without this search just the neural network itself doesn't that give us an existence proof that neural networks can reason to push back and disagree a little bit we all agree that go is reasoning i think i i agree i don't think it's a trivial so obviously reasoning like intelligence is uh is a loose gray area term a little bit maybe you disagree with that but yes i think it has some of the same elements of reasoning reasoning is almost like akin to search right there's a sequential element of stepwise consideration of possibilities and sort of building on top of those possibilities in a sequential manner</p>
+            <p>Start time: 2540.96</p>
+            <p>Video: <a href="https://www.youtube.com/watch?v=13CZPWmke6A" target="_blank" class="thumbnail-container"><img src="https://i.ytimg.com/vi/O5xeyoRL95U/hqdefault.jpg" alt="Thumbnail"></a></p>
+        </div>
+    </div> -->
+
 </body>
 </html>

@@ -1,0 +1,23 @@
+/* Container for the thumbnail with 16:9 aspect ratio */
+.thumbnail-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    overflow: hidden;
+}
+
+/* Thumbnail image */
+.thumbnail-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* To maintain aspect ratio */
+}
+
+/* Search box */
+input#query {
+    width: 80%;
+    max-width: 600px;
+}

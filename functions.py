@@ -13,6 +13,8 @@ from google.oauth2 import service_account
 import google.auth.transport.requests
 import requests
 import re
+from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np
 
 YOUTUBE_API_KEY = "AIzaSyDCtUOqvJB9cEhsHPGKUtQSdjQg4zq8oC8"
 ACCESS_TOKEN = "428637118276-8n95ohv3clke0hj3bdd4k5b7hgs72qr6.apps.googleusercontent.com"
@@ -114,21 +116,24 @@ def create_df(query):
     df = pd.concat([df_meta,df_ft,df_parts],axis = 1) 
     df = df.dropna(subset = 'Full Text') 
 
-    # df.to_excel("data/youtube_transcripts.xlsx")
+    df.to_excel("data/youtube_transcripts.xlsx")
     return df
 
 def generate_embeddings(df):
 
     # Iterate through the rows of the dataframe
     for index, row in df.iterrows():
+        print(row['Title'])
         # Iterate through the columns containing text segments
         for col in row.index[5:]:
             if not pd.isna(row[col]):
                 # Remove newlines and sound indicators
                 row[col]['text'] = row[col]['text'].replace("\n", " ")
                 row[col]['text'] = re.sub(r"\[.*?\]", "", row[col]['text'])
+                # Combine title of video and text
+                combined = f"Title: {row['Title']}; Content: {row[col]['text']}"
                 # Generate embeddings for each segment
-                embedding = get_embedding(row[col]['text'], engine=embedding_model)
+                embedding = get_embedding(combined, engine=embedding_model)
                 # Add the embedding to the dictionary
                 row[col]['embedding'] = embedding
             else:
@@ -136,6 +141,46 @@ def generate_embeddings(df):
 
     df.to_excel("data/segment_embeddings.xlsx")
     return df
+
+def generate_query_embeddings(query):
+
+    embedding = get_embedding(query, engine=embedding_model)
+    return embedding
+
+def top_3_results(data_embedding, query_embedding):
+    
+    similarities = []
+    
+    # Iterate through the rows of the dataframe
+    for index, row in data_embedding.iterrows():
+        # Iterate through the columns containing text segments
+        for col in row.index[5:]:
+            if not pd.isna(row[col]):
+                # Compute cosine similarity
+                similarity = cosine_similarity([row[col]['embedding']], [query_embedding])[0][0]
+                similarities.append((similarity, row[col]['text'], row[col]['start'], row['Title'], row['Channel_title'], row['Link'], row['Thumbnail']))
+                
+    # Sort by similarity (highest first)
+    similarities.sort(key=lambda x: x[0], reverse=True)
+    
+    # Print top 3 results
+    for i in range(min(3, len(similarities))):
+        similarity, text, start, title, channel_title, link, thumbnail = similarities[i]
+        print(f"Result {i+1}:")
+        print(f"Similarity Score: {similarity}")
+        print(f"Text: {text}")
+        print(f"Start time: {start}")
+        print(f"Title: {title}")
+        print(f"Channel Title: {channel_title}")
+        print(f"Link: {link}")
+        print(f"Thumbnail: {thumbnail}")
+        print("\n")
+    
+    similarities_dataframe = pd.DataFrame(similarities)
+    similarities_dataframe.to_excel("data/results.xlsx")
+    return similarities[:3]
+
+
 
 # Do not use this function. This is for the old dataset. Use the new generate_embeddings() function defined.
 def create_embeddings():
