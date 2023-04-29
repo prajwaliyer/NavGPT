@@ -123,7 +123,6 @@ def generate_embeddings(df):
 
     # Iterate through the rows of the dataframe
     for index, row in df.iterrows():
-        print(row['Title'])
         # Iterate through the columns containing text segments
         for col in row.index[5:]:
             if not pd.isna(row[col]):
