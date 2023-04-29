@@ -47,7 +47,6 @@ def combine_text_by_duration(data, segment_duration):
             
             if current_duration == segment_duration:
                 combined_text.append({'text': current_text, 'start': item_start})
-                fulltext.append(current_text)
                 current_text = ""
                 current_duration = 0
         
