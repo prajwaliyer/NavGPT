@@ -12,6 +12,7 @@ import json
 from google.oauth2 import service_account
 import google.auth.transport.requests
 import requests
+import re
 
 YOUTUBE_API_KEY = "AIzaSyDCtUOqvJB9cEhsHPGKUtQSdjQg4zq8oC8"
 ACCESS_TOKEN = "428637118276-8n95ohv3clke0hj3bdd4k5b7hgs72qr6.apps.googleusercontent.com"
@@ -113,9 +114,30 @@ def create_df(query):
     df = pd.concat([df_meta,df_ft,df_parts],axis = 1) 
     df = df.dropna(subset = 'Full Text') 
 
-    # df.to_csv("data/youtube_transcripts.csv")
+    # df.to_excel("data/youtube_transcripts.xlsx")
     return df
 
+def generate_embeddings(df):
+
+    # Iterate through the rows of the dataframe
+    for index, row in df.iterrows():
+        # Iterate through the columns containing text segments
+        for col in row.index[5:]:
+            if not pd.isna(row[col]):
+                # Remove newlines and sound indicators
+                row[col]['text'] = row[col]['text'].replace("\n", " ")
+                row[col]['text'] = re.sub(r"\[.*?\]", "", row[col]['text'])
+                # Generate embeddings for each segment
+                embedding = get_embedding(row[col]['text'], engine=embedding_model)
+                # Add the embedding to the dictionary
+                row[col]['embedding'] = embedding
+            else:
+                break
+
+    df.to_excel("data/segment_embeddings.xlsx")
+    return df
+
+# Do not use this function. This is for the old dataset. Use the new generate_embeddings() function defined.
 def create_embeddings():
 
     # Gather data
@@ -143,4 +165,5 @@ def create_embeddings():
 
     # This may take a few minutes
     data['embedding'] = data.combined.apply(lambda x: get_embedding(x, engine=embedding_model))
-    # data.to_csv("data/embeddings.csv")
+    # data.to_excel("data/embeddings.xlsx")
+

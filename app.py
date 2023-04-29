@@ -13,7 +13,7 @@ from google.oauth2 import service_account
 import google.auth.transport.requests
 import requests
 
-from functions import combine_text_by_duration, create_df, create_embeddings
+from functions import combine_text_by_duration, create_df, create_embeddings, generate_embeddings
 
 YOUTUBE_API_KEY = "AIzaSyDCtUOqvJB9cEhsHPGKUtQSdjQg4zq8oC8"
 ACCESS_TOKEN = "428637118276-8n95ohv3clke0hj3bdd4k5b7hgs72qr6.apps.googleusercontent.com"
@@ -38,15 +38,15 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    # create_embeddings()   # Used one time to generate the embeddings
-    data = create_df("machine learning videos")
-    print(data.head(2))
     return render_template('index.html')
 
 @app.route('/search')
 def search():
     query = request.args.get('query')
-    return f'Search results for: {query}'
+    data = create_df(query)
+    data_with_embeddings = generate_embeddings(data)
+    print(data_with_embeddings.head(2))
+    return render_template('index.html', data=data_with_embeddings)
 
 if __name__ == '__main__':
     app.run()
