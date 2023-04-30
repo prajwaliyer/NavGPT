@@ -118,6 +118,7 @@ def create_df(query):
     df = df[df['Full Text'] != 'None ']
 
     # df.to_excel("data/youtube_transcripts.xlsx")
+    print("Dataframe created")
     return df
 
 def generate_embeddings(df):
@@ -140,11 +141,13 @@ def generate_embeddings(df):
                 break
 
     # df.to_excel("data/segment_embeddings.xlsx")
+    print("Data embeddings generated")
     return df
 
 def generate_query_embeddings(query):
 
     embedding = get_embedding(query, engine=embedding_model)
+    print("Query embeddings generated")
     return embedding
 
 def top_3_results(data_embedding, query_embedding):
@@ -162,11 +165,36 @@ def top_3_results(data_embedding, query_embedding):
                 
     # Sort by similarity (highest first)
     similarities.sort(key=lambda x: x[0], reverse=True)
+
+    updated_similarities = []
+    for row in similarities[:5]:
+        summary = generate_summary(row[1])
+        # summary = 0
+        updated_row = row + (summary,)
+        updated_similarities.append(updated_row)
     
     # Print top 3 results
-    for i in range(min(3, len(similarities))):
-        similarity, text, start, title, channel_title, link, thumbnail = similarities[i]
+    for i in range(min(3, len(updated_similarities))):
+        similarity, text, start, title, channel_title, link, thumbnail, summary = updated_similarities[i]
     
     # similarities_dataframe = pd.DataFrame(similarities)
     # similarities_dataframe.to_excel("data/results.xlsx")
-    return similarities[:3]
+    print("Similarities ranked")
+    return updated_similarities[:5]
+
+def generate_summary(transcript):
+    
+    prompt = f"Create a one-line summary of the following transcript:\n\n{transcript}"
+    
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+                {"role": "system", "content": "You are a helpful assistant who summarizes paragraphs in one sentence."},
+                {"role": "user", "content": prompt}
+            ]
+        )
+
+    summary = response['choices'][0]['message']['content'].strip()
+
+    print("Summary generated")
+    return summary

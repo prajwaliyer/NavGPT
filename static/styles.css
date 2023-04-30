@@ -1,4 +1,49 @@
-/* Container for the thumbnail with 16:9 aspect ratio */
+h1 {
+    text-align: center;
+    color: #ffffff;
+}
+
+form {
+    display: flex;
+    justify-content: center;
+}
+
+/* Search box */
+input#query {
+    width: 80%;
+    max-width: 600px;
+    margin-right: 1em;
+    background-color: #ffffff;
+    color: #5a5a5d;
+    border: 1px solid #5a5a5d;
+}
+
+input#query::placeholder {
+    color: #5a5a5d;
+}
+
+.button {
+    background-color: #2c2c2e;
+    color: #FFFFFF;
+    border: 1px solid #5a5a5d;
+}
+
+.header {
+    background-color: #C4302B;
+    padding: 2em 0;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #1c1c1e;
+    color: #FFFFFF;
+}
+
+p b {
+    color: #ffffff;
+}
+
 .thumbnail-container {
     position: relative;
     width: 100%;
@@ -25,16 +70,15 @@
     object-position: center;
 }
 
-/* Search box */
-input#query {
-    width: 80%;
-    max-width: 600px;
+.results {
+    margin: 1em;
 }
 
 .result {
     display: flex;
     flex-wrap: wrap;
     margin-bottom: 2em;
+    align-items: center;
 }
 
 .result img {
@@ -59,6 +103,8 @@ input#query {
 
 .right-column {
     flex: 1 1 66%;
+    max-height: 100%;
+    overflow-y: auto;
 }
 
 @media (max-width: 768px) {

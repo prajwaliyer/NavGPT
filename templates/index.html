@@ -8,13 +8,14 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>YouTube Transcript Search</h1>
+    <div class="header">
+        <h1>YouTube Transcript Search</h1>
     <form action="/search" method="get">
-        <label for="query">Search:</label>
         <input type="text" id="query" name="query" placeholder="Enter search term..." value="{{ query|default('', true) }}">
         <button type="submit">Search</button>
     </form>
-
+    </div>
+    
     {% if results %}
     <div class="results">
         {% for result in results %}
@@ -26,8 +27,8 @@
                 </div>
                 <div class="right-column">
                     <h3>{{ result[3]|safe }} - {{ result[4] }}</h3>
+                    <p><b>Summary: </b>{{ result[7] }}</p>
                     <p><b>Text: </b>{{ result[1] }}</p>
-                    <p><b>Start time: </b>{{ result[2] }}</p>
                 </div>
             </div>
         {% endfor %}

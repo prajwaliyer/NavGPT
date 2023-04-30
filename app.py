@@ -13,7 +13,7 @@ from google.oauth2 import service_account
 import google.auth.transport.requests
 import requests
 
-from functions import combine_text_by_duration, create_df, generate_embeddings, generate_query_embeddings, top_3_results
+from functions import combine_text_by_duration, create_df, generate_embeddings, generate_query_embeddings, top_3_results, generate_summary
 
 YOUTUBE_API_KEY = "AIzaSyDCtUOqvJB9cEhsHPGKUtQSdjQg4zq8oC8"
 ACCESS_TOKEN = "428637118276-8n95ohv3clke0hj3bdd4k5b7hgs72qr6.apps.googleusercontent.com"
@@ -47,7 +47,6 @@ def search():
     data_embedding = generate_embeddings(data)
     query_embedding = generate_query_embeddings(query)
     results = top_3_results(data_embedding, query_embedding)
-    print(data_embedding.head(2))
     return render_template('index.html', results=results, query=query)
 
 if __name__ == '__main__':
