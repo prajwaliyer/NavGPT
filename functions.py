@@ -131,7 +131,7 @@ def generate_embeddings(df):
                 row[col]['text'] = row[col]['text'].replace("\n", " ")
                 row[col]['text'] = re.sub(r"\[.*?\]", "", row[col]['text'])
                 # Combine title of video and text
-                combined = f"Title: {row['Title']}; Content: {row[col]['text']}"
+                combined = f"Title: {row['Title']}; Channel: {row['Channel_title']}; Content: {row[col]['text']}"
                 # Generate embeddings for each segment
                 embedding = get_embedding(combined, engine=embedding_model)
                 # Add the embedding to the dictionary
