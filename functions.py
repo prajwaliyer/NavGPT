@@ -165,15 +165,15 @@ def top_3_results(data_embedding, query_embedding):
     # Print top 3 results
     for i in range(min(3, len(similarities))):
         similarity, text, start, title, channel_title, link, thumbnail = similarities[i]
-        print(f"Result {i+1}:")
-        print(f"Similarity Score: {similarity}")
-        print(f"Text: {text}")
-        print(f"Start time: {start}")
-        print(f"Title: {title}")
-        print(f"Channel Title: {channel_title}")
-        print(f"Link: {link}")
-        print(f"Thumbnail: {thumbnail}")
-        print("\n")
+        # print(f"Result {i+1}:")
+        # print(f"Similarity Score: {similarity}")
+        # print(f"Text: {text}")
+        # print(f"Start time: {start}")
+        # print(f"Title: {title}")
+        # print(f"Channel Title: {channel_title}")
+        # print(f"Link: {link}")
+        # print(f"Thumbnail: {thumbnail}")
+        # print("\n")
     
     similarities_dataframe = pd.DataFrame(similarities)
     similarities_dataframe.to_excel("data/results.xlsx")
@@ -196,7 +196,7 @@ def create_embeddings():
     data['combined'] = (
         "Title: " + data.title.str.strip() + "; Content: " + data.transcript.str.strip()
     )
-    print(data.head(2))
+    # print(data.head(2))
 
     # Tokenize
     top_n = 5000
@@ -204,7 +204,7 @@ def create_embeddings():
     # Omit transcripts that are too long to embed since ada model has max_tokens size
     data['n_tokens'] = data.combined.apply(lambda x: len(encoding.encode(x)))
     data = data[data.n_tokens <= max_tokens].tail(top_n)
-    print(len(data))
+    # print(len(data))
     
 
     # This may take a few minutes
