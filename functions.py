@@ -80,8 +80,8 @@ def create_df(query):
         video_id = video_result["id"]["videoId"]
         try:
             transcript.append(YouTubeTranscriptApi.get_transcript(video_id))
-            #print(transcript)
         except:
+              transcript.append([{'text': 'None' , 'start':0.00,'duration':0.00}])
               continue
     
     fulltext = []
@@ -115,8 +115,9 @@ def create_df(query):
     df_meta = pd.DataFrame(data)
     df = pd.concat([df_meta,df_ft,df_parts],axis = 1) 
     df = df.dropna(subset = 'Full Text') 
+    df = df[df['Full Text'] != 'None ']
 
-    df.to_excel("data/youtube_transcripts.xlsx")
+    # df.to_excel("data/youtube_transcripts.xlsx")
     return df
 
 def generate_embeddings(df):
@@ -138,7 +139,7 @@ def generate_embeddings(df):
             else:
                 break
 
-    df.to_excel("data/segment_embeddings.xlsx")
+    # df.to_excel("data/segment_embeddings.xlsx")
     return df
 
 def generate_query_embeddings(query):
@@ -165,49 +166,7 @@ def top_3_results(data_embedding, query_embedding):
     # Print top 3 results
     for i in range(min(3, len(similarities))):
         similarity, text, start, title, channel_title, link, thumbnail = similarities[i]
-        # print(f"Result {i+1}:")
-        # print(f"Similarity Score: {similarity}")
-        # print(f"Text: {text}")
-        # print(f"Start time: {start}")
-        # print(f"Title: {title}")
-        # print(f"Channel Title: {channel_title}")
-        # print(f"Link: {link}")
-        # print(f"Thumbnail: {thumbnail}")
-        # print("\n")
     
-    similarities_dataframe = pd.DataFrame(similarities)
-    similarities_dataframe.to_excel("data/results.xlsx")
+    # similarities_dataframe = pd.DataFrame(similarities)
+    # similarities_dataframe.to_excel("data/results.xlsx")
     return similarities[:3]
-
-
-
-# Do not use this function. This is for the old dataset. Use the new generate_embeddings() function defined.
-def create_embeddings():
-
-    # Gather data
-    df = pd.read_csv('data/YouTube_transcripts_Kaggle.csv')
-    data = df[['title', 'author', 'transcript', 'playlist_name']]
-
-    # Remove sound indicators
-    data['transcript'] = data['transcript'].str.replace(r"\[.*?\]","", regex=True)
-    del df
-
-    # Combine title and transcripts
-    data['combined'] = (
-        "Title: " + data.title.str.strip() + "; Content: " + data.transcript.str.strip()
-    )
-    # print(data.head(2))
-
-    # Tokenize
-    top_n = 5000
-    encoding = tiktoken.get_encoding(embedding_encoding)
-    # Omit transcripts that are too long to embed since ada model has max_tokens size
-    data['n_tokens'] = data.combined.apply(lambda x: len(encoding.encode(x)))
-    data = data[data.n_tokens <= max_tokens].tail(top_n)
-    # print(len(data))
-    
-
-    # This may take a few minutes
-    data['embedding'] = data.combined.apply(lambda x: get_embedding(x, engine=embedding_model))
-    # data.to_excel("data/embeddings.xlsx")
-
