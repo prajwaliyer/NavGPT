@@ -106,7 +106,7 @@ def create_df(query):
        title = item['snippet']['title']
        channel_title = item['snippet']['channelTitle']
        video_link = "https://www.youtube.com/watch?v=" + item["id"]["videoId"]
-       tn = video_result["snippet"]["thumbnails"]["high"]["url"]
+       tn = item["snippet"]["thumbnails"]["high"]["url"]
        data['Link'].append(video_link)
        data['Title'].append(title)
        data['Channel_title'].append(channel_title)
