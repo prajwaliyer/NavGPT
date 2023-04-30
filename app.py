@@ -48,7 +48,7 @@ def search():
     query_embedding = generate_query_embeddings(query)
     results = top_3_results(data_embedding, query_embedding)
     print(data_embedding.head(2))
-    return render_template('index.html', results=results)
+    return render_template('index.html', results=results, query=query)
 
 if __name__ == '__main__':
     app.run()
