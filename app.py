@@ -15,15 +15,12 @@ import requests
 
 from functions import combine_text_by_duration, create_df, generate_embeddings, generate_query_embeddings, top_3_results, generate_summary
 
-YOUTUBE_API_KEY = "AIzaSyDCtUOqvJB9cEhsHPGKUtQSdjQg4zq8oC8"
-ACCESS_TOKEN = "428637118276-8n95ohv3clke0hj3bdd4k5b7hgs72qr6.apps.googleusercontent.com"
+YOUTUBE_API_KEY = "AIzaSyC64IiQByJbZixzDE2N0UcRyyxrvY7UOgg"
 
-credentials = service_account.Credentials.from_service_account_file("youtubecaptions-384401-fe74ae73c098.json", scopes=["https://www.googleapis.com/auth/youtube.readonly","https://www.googleapis.com/auth/youtube.force-ssl"])
+credentials = service_account.Credentials.from_service_account_file("transcriptsearch-385402-b325d3adb776.json", scopes=["https://www.googleapis.com/auth/youtube.readonly","https://www.googleapis.com/auth/youtube.force-ssl"])
 
 youtube = googleapiclient.discovery.build("youtube", "v3", developerKey=YOUTUBE_API_KEY, credentials=credentials)
-session = google.auth.transport.requests.AuthorizedSession(credentials)
 
-session.headers.update({'Authorization': 'Bearer ' + ACCESS_TOKEN})
 
 load_dotenv()
 openai.organization = os.getenv("ORG_KEY")
