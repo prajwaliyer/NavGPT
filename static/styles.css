@@ -14,14 +14,22 @@ form {
 input#query {
     width: 80%;
     max-width: 600px;
-    margin-right: 1em;
     background-color: #ffffff;
     color: #5a5a5d;
     border: 1px solid #5a5a5d;
+    border-radius: 20px 0 0 20px;
+    padding-left: 12px;
+    padding-right: 8px;
 }
 
 input#query::placeholder {
     color: #5a5a5d;
+    font-family: 'Roboto', sans-serif;
+}
+
+input#query:focus {
+    outline: none;
+    border: 2px solid #007bff;
 }
 
 .more {
@@ -34,6 +42,23 @@ input#query::placeholder {
     background-color: #2c2c2e;
     color: #FFFFFF;
     border: 1px solid #5a5a5d;
+}
+
+button {
+    background-color: #1c1c1e;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 0 20px 20px 0;
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+    outline: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #631d1d;
 }
 
 .header {
