@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transcript Search</title>
+    <title>YT Time Search</title>
     <link rel="icon" href="{{ url_for('static', filename='youtube.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="header">
-        <h1>YouTube Transcript Search</h1>
+        <h1>YouTube Time Search</h1>
     <form action="/search" method="get">
         <input type="text" id="query" name="query" placeholder="Enter search term..." value="{{ query|default('', true) }}">
         <button type="submit">Search</button>
@@ -28,12 +32,44 @@
                 <div class="right-column">
                     <h3>{{ result[3]|safe }} - {{ result[4] }}</h3>
                     <p><b>Summary: </b>{{ result[7] }}</p>
-                    <p><b>Transcript: </b>{{ result[1] }}</p>
+                    <p class="text-container"><b>Transcript: </b><span class="limited-text"></span><span class="full-text" style="display: none;">{{ result[1] }}</span> <span class="more" onclick="toggleMore(this)">more...</span></p>
                 </div>
             </div>
         {% endfor %}
     </div>
     {% endif %}
 
+    <script>
+        function toggleMore(moreElement) {
+            const textContainer = moreElement.parentElement;
+            const limitedTextElement = textContainer.querySelector(".limited-text");
+            const fullTextElement = textContainer.querySelector(".full-text");
+        
+            if (fullTextElement.style.display === "none") {
+                limitedTextElement.style.display = "none";
+                fullTextElement.style.display = "inline";
+                moreElement.textContent = "less...";
+            } else {
+                limitedTextElement.style.display = "inline";
+                fullTextElement.style.display = "none";
+                moreElement.textContent = "more...";
+            }
+        }
+        
+        document.querySelectorAll(".text-container").forEach(container => {
+            const limitedTextElement = container.querySelector(".limited-text");
+            const fullTextElement = container.querySelector(".full-text");
+            const words = fullTextElement.textContent.split(" ");
+            const maxWords = 250;
+        
+            if (words.length > maxWords) {
+                const limitedText = words.slice(0, maxWords).join(" ") + " ";
+                limitedTextElement.textContent = limitedText;
+            } else {
+                limitedTextElement.textContent = fullTextElement.textContent;
+                container.querySelector(".more").style.display = "none";
+            }
+        });
+    </script>
 </body>
 </html>
