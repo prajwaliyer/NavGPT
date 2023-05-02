@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl5//u6KDXww2Qkzjwl/9Q2q+8f5f/1Yioxd/BKgcz" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
 </head>
 <body>
     <div class="header">
@@ -28,7 +28,16 @@
                 <div class="left-column">
                     <div class="thumbnail-container">
                         <a href="{{ result[5] }}&t={{ result[2]|int }}s" target="_blank"><img class="thumbnail" src="{{ result[6] }}" alt="Thumbnail"></a>
+                        
                     </div>
+                     <div class="space-container">
+                        <span class = "like">
+                            <i onclick="like()"  id="li" class="fa-solid fa-thumbs-up"></i> 
+                        </span>
+                        <span class = "dislike">
+                            <i onclick="dislike()"id="dl" class="fa-solid fa-thumbs-down"></i> 
+                        </span>
+                     </div>
                 </div>
                 <div class="right-column">
                     <h3>{{ result[3]|safe }} - {{ result[4] }}</h3>
@@ -41,6 +50,16 @@
     {% endif %}
 
     <script>
+        function like(){
+             document.getElementById("li").style.color='blue'
+             document.getElementById("dl").style.color='grey'
+
+        }
+        function dislike(){
+             document.getElementById("dl").style.color='red'
+             document.getElementById("li").style.color='grey'
+
+        }
         function toggleMore(moreElement) {
             const textContainer = moreElement.parentElement;
             const limitedTextElement = textContainer.querySelector(".limited-text");
