@@ -103,6 +103,26 @@ p b {
     object-fit: cover;
     object-position: center;
 }
+.like{
+    margin: 25px;
+}
+.like i{
+    font-size: 34px;
+    color: grey;
+}
+.dislike{
+    margin: 25px;
+}
+.dislike i{
+    font-size: 34px;
+    color: grey;
+}
+.space-container {
+    position: relative;
+    width: 100%;
+    margin-top: 25px;
+    overflow: hidden;
+}
 
 .results {
     margin: 1em;
