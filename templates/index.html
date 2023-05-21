@@ -28,15 +28,6 @@
                 <div class="left-column">
                     <div class="thumbnail-container">
                         <a href="{{ result[5] }}&t={{ result[2]|int }}s" target="_blank"><img class="thumbnail" src="{{ result[6] }}" alt="Thumbnail"></a>
-                        
-                    </div>
-                     <div class="space-container">
-                        <span class = "like">
-                            <i onclick="like()"  id="li" class="fa-solid fa-thumbs-up"></i> 
-                        </span>
-                        <span class = "dislike">
-                            <i onclick="dislike()"id="dl" class="fa-solid fa-thumbs-down"></i> 
-                        </span>
                      </div>
                 </div>
                 <div class="right-column">
@@ -50,16 +41,6 @@
     {% endif %}
 
     <script>
-        function like(){
-             document.getElementById("li").style.color='blue'
-             document.getElementById("dl").style.color='grey'
-
-        }
-        function dislike(){
-             document.getElementById("dl").style.color='red'
-             document.getElementById("li").style.color='grey'
-
-        }
         function toggleMore(moreElement) {
             const textContainer = moreElement.parentElement;
             const limitedTextElement = textContainer.querySelector(".limited-text");

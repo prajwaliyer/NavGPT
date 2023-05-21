@@ -15,16 +15,13 @@ import requests
 
 from functions import combine_text_by_duration, create_df, generate_embeddings, generate_query_embeddings, top_3_results, generate_summary
 
-YOUTUBE_API_KEY = "AIzaSyC64IiQByJbZixzDE2N0UcRyyxrvY7UOgg"
-
-credentials = service_account.Credentials.from_service_account_file("transcriptsearch-385402-b325d3adb776.json", scopes=["https://www.googleapis.com/auth/youtube.readonly","https://www.googleapis.com/auth/youtube.force-ssl"])
-
-youtube = googleapiclient.discovery.build("youtube", "v3", developerKey=YOUTUBE_API_KEY, credentials=credentials)
-
-
 load_dotenv()
 openai.organization = os.getenv("ORG_KEY")
 openai.api_key = os.getenv("OPENAI_API_KEY")
+YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
+
+credentials = service_account.Credentials.from_service_account_file("youtube-api-credentials.json", scopes=["https://www.googleapis.com/auth/youtube.readonly","https://www.googleapis.com/auth/youtube.force-ssl"])
+youtube = googleapiclient.discovery.build("youtube", "v3", developerKey=YOUTUBE_API_KEY, credentials=credentials)
 
 # embedding model parameters
 embedding_model = "text-embedding-ada-002"
