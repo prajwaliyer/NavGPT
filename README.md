@@ -1,4 +1,8 @@
-# NavGPT
+# YouTube Timestamp Search
+
+## Introduction
+
+YouTube Timestamp Search allows you to search for short segments in videos all over YouTube. After inputting a query, the user is returned with 5 relevant segments that may come from various videos. Clicking on any of these will take you directly to the timestamped portion of the video in which the segment exists.
 
 ## Developer Setup
 
