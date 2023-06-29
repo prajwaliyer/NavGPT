@@ -15,6 +15,8 @@ import requests
 import re
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
+import concurrent.futures
+import time
 
 load_dotenv()
 openai.organization = os.getenv("ORG_KEY")
@@ -115,26 +117,36 @@ def create_df(query):
     print("Dataframe created")
     return df
 
+def generate_single_embedding(text):
+    # Generate embedding for a single text
+    return get_embedding(text, engine=embedding_model)
+
 def generate_embeddings(df):
+    # Create a ThreadPoolExecutor
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        # Iterate through the rows of the dataframe
+        for index, row in df.iterrows():
+            # Prepare a list to hold the text segments for batch processing
+            texts = []
+            # Iterate through the columns containing text segments
+            for col in row.index[5:]:
+                if not pd.isna(row[col]):
+                    # Remove newlines and sound indicators
+                    row[col]['text'] = row[col]['text'].replace("\n", " ")
+                    row[col]['text'] = re.sub(r"\[.*?\]", "", row[col]['text'])
+                    # Combine title of video and text
+                    combined = f"Title: {row['Title']}; Channel: {row['Channel_title']}; Content: {row[col]['text']}"
+                    # Add the combined text to the list
+                    texts.append(combined)
+                else:
+                    break
+            # Generate embeddings for all text segments in the batch
+            embeddings = list(executor.map(generate_single_embedding, texts))
+            # Add the embeddings to the dataframe
+            for i, col in enumerate(row.index[5:]):
+                if i < len(embeddings):
+                    row[col]['embedding'] = embeddings[i]
 
-    # Iterate through the rows of the dataframe
-    for index, row in df.iterrows():
-        # Iterate through the columns containing text segments
-        for col in row.index[5:]:
-            if not pd.isna(row[col]):
-                # Remove newlines and sound indicators
-                row[col]['text'] = row[col]['text'].replace("\n", " ")
-                row[col]['text'] = re.sub(r"\[.*?\]", "", row[col]['text'])
-                # Combine title of video and text
-                combined = f"Title: {row['Title']}; Channel: {row['Channel_title']}; Content: {row[col]['text']}"
-                # Generate embeddings for each segment
-                embedding = get_embedding(combined, engine=embedding_model)
-                # Add the embedding to the dictionary
-                row[col]['embedding'] = embedding
-            else:
-                break
-
-    # df.to_excel("data/segment_embeddings.xlsx")
     print("Data embeddings generated")
     return df
 
@@ -144,7 +156,7 @@ def generate_query_embeddings(query):
     print("Query embeddings generated")
     return embedding
 
-def top_3_results(data_embedding, query_embedding):
+def top_5_results(data_embedding, query_embedding):
     
     similarities = []
     
@@ -160,35 +172,40 @@ def top_3_results(data_embedding, query_embedding):
     # Sort by similarity (highest first)
     similarities.sort(key=lambda x: x[0], reverse=True)
 
+    # Get the top 5 transcripts
+    top_transcripts = [row[1] for row in similarities[:5]]
+
+    # Generate summaries for the top 5 transcripts
+    summaries = generate_summaries(top_transcripts)
+
     updated_similarities = []
-    for row in similarities[:5]:
-        summary = generate_summary(row[1])
-        # summary = 0
+    for i in range(min(5, len(similarities))):
+        row = similarities[i]
+        summary = summaries[i]
         updated_row = row + (summary,)
         updated_similarities.append(updated_row)
     
-    # Print top 3 results
-    for i in range(min(3, len(updated_similarities))):
-        similarity, text, start, title, channel_title, link, thumbnail, summary = updated_similarities[i]
-    
-    # similarities_dataframe = pd.DataFrame(similarities)
-    # similarities_dataframe.to_excel("data/results.xlsx")
     print("Similarities ranked")
     return updated_similarities[:5]
 
-def generate_summary(transcript):
-    
+def generate_single_summary(transcript):
+    time.sleep(0.2)  # add a delay of 200 milliseconds
     prompt = f"Create a one-line summary of the following transcript:\n\n{transcript}"
-    
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
-                {"role": "system", "content": "You are a helpful assistant who summarizes paragraphs in one sentence."},
-                {"role": "user", "content": prompt}
-            ]
-        )
-
+            {"role": "system", "content": "You are a helpful assistant who summarizes paragraphs in one sentence."},
+            {"role": "user", "content": prompt}
+        ]
+    )
     summary = response['choices'][0]['message']['content'].strip()
-
-    print("Summary generated")
     return summary
+
+def generate_summaries(transcripts):
+    # Create a ThreadPoolExecutor with a maximum of 5 threads
+    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+        # Generate summaries for all transcripts in the batch
+        summaries = list(executor.map(generate_single_summary, transcripts))
+
+    print("Summaries generated")
+    return summaries
