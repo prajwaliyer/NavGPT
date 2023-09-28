@@ -56,7 +56,7 @@ def combine_text_by_duration(data, segment_duration):
                 combined_text.append({'text': current_text, 'start': item_start})
                 current_text = ""
                 current_duration = 0
-        
+
     return combined_text
 
 def create_df(query):
@@ -68,6 +68,7 @@ def create_df(query):
     fields="items(id,snippet)",
     maxResults=10,
     ).execute()
+    print(search_response)
 
     transcript=[]
     thumbnail=[]
@@ -76,8 +77,10 @@ def create_df(query):
         video_id = video_result["id"]["videoId"]
         try:
             transcript.append(YouTubeTranscriptApi.get_transcript(video_id))
+            print("transcript received")
         except:
               transcript.append([{'text': 'None' , 'start':0.00,'duration':0.00}])
+              print("transcript failed")
               continue
     
     fulltext = []
