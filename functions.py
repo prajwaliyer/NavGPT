@@ -114,7 +114,7 @@ def create_df(query):
     df = df[df['Full Text'] != 'None ']
 
     # df.to_excel("data/youtube_transcripts.xlsx")
-    print(df[0])
+    print(df.iloc[0])
     print("Dataframe created")
     return df
 
