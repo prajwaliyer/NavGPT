@@ -78,9 +78,9 @@ def create_df(query):
         try:
             transcript.append(YouTubeTranscriptApi.get_transcript(video_id))
             print("transcript received")
-        except:
+        except Exception as e:
+              print(f"Error: {e}")
               transcript.append([{'text': 'None' , 'start':0.00,'duration':0.00}])
-              print("transcript failed")
               continue
     
     fulltext = []
