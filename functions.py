@@ -68,7 +68,6 @@ def create_df(query):
     fields="items(id,snippet)",
     maxResults=10,
     ).execute()
-    print(search_response)
 
     transcript=[]
     thumbnail=[]
@@ -77,9 +76,7 @@ def create_df(query):
         video_id = video_result["id"]["videoId"]
         try:
             transcript.append(YouTubeTranscriptApi.get_transcript(video_id))
-            print("transcript received")
-        except Exception as e:
-              print(f"Error: {e}")
+        except:
               transcript.append([{'text': 'None' , 'start':0.00,'duration':0.00}])
               continue
     
@@ -117,7 +114,6 @@ def create_df(query):
     df = df[df['Full Text'] != 'None ']
 
     # df.to_excel("data/youtube_transcripts.xlsx")
-    print(df.iloc[0])
     print("Dataframe created")
     return df
 

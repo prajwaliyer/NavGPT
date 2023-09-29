@@ -12,6 +12,7 @@ import json
 from google.oauth2 import service_account
 import google.auth.transport.requests
 import requests
+import time
 
 from functions import create_df, generate_embeddings, generate_query_embeddings, top_5_results
 
@@ -41,6 +42,7 @@ def search():
     data_embedding = generate_embeddings(data)
     query_embedding = generate_query_embeddings(query)
     results = top_5_results(data_embedding, query_embedding)
+    time.sleep(2)
     return render_template('index.html', results=results, query=query)
 
 if __name__ == '__main__':
