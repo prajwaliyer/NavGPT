@@ -20,8 +20,9 @@ load_dotenv()
 openai.organization = os.getenv("ORG_KEY")
 openai.api_key = os.getenv("OPENAI_API_KEY")
 YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
+credentials_json = json.loads(os.getenv("YOUTUBE_API_CREDENTIALS"))
 
-credentials = service_account.Credentials.from_service_account_file("youtube-api-credentials.json", scopes=["https://www.googleapis.com/auth/youtube.readonly","https://www.googleapis.com/auth/youtube.force-ssl"])
+credentials = service_account.Credentials.from_service_account_info(credentials_json, scopes=["https://www.googleapis.com/auth/youtube.readonly", "https://www.googleapis.com/auth/youtube.force-ssl"])
 youtube = googleapiclient.discovery.build("youtube", "v3", developerKey=YOUTUBE_API_KEY, credentials=credentials)
 
 # embedding model parameters
