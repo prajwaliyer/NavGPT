@@ -17,6 +17,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 import concurrent.futures
 import time
+import logging
 
 load_dotenv()
 openai.organization = os.getenv("ORG_KEY")
@@ -60,6 +61,9 @@ def combine_text_by_duration(data, segment_duration):
     print("Combined text: ", combined_text)
     return combined_text
 
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+
 def create_df(query):
     
     search_response = youtube.search().list(
@@ -77,8 +81,12 @@ def create_df(query):
         video_id = video_result["id"]["videoId"]
         try:
             print("Getting transcript for video: ", video_id)
-            transcript.append(YouTubeTranscriptApi.get_transcript(video_id))
-        except:
+            logging.info(f"Attempting to fetch transcript for video ID: {video_id}")
+            transcript_data = YouTubeTranscriptApi.get_transcript(video_id)
+            transcript.append(transcript_data)
+            logging.info(f"Successfully fetched transcript for video ID: {video_id}")
+        except Exception as e:
+            logging.error(f"Error fetching transcript for video ID {video_id}: {e}")
             print("Transcript not available for video: ", video_id)
             transcript.append([{'text': 'None' , 'start':0.00,'duration':0.00}])
             continue
