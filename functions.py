@@ -76,10 +76,12 @@ def create_df(query):
     for video_result in search_response["items"]:
         video_id = video_result["id"]["videoId"]
         try:
+            print("Getting transcript for video: ", video_id)
             transcript.append(YouTubeTranscriptApi.get_transcript(video_id))
         except:
-              transcript.append([{'text': 'None' , 'start':0.00,'duration':0.00}])
-              continue
+            print("Transcript not available for video: ", video_id)
+            transcript.append([{'text': 'None' , 'start':0.00,'duration':0.00}])
+            continue
     
     fulltext = []
 
