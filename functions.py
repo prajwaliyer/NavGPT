@@ -57,7 +57,7 @@ def combine_text_by_duration(data, segment_duration):
                 combined_text.append({'text': current_text, 'start': item_start})
                 current_text = ""
                 current_duration = 0
-
+    print("Combined text: ", combined_text)
     return combined_text
 
 def create_df(query):
